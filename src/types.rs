@@ -55,7 +55,7 @@ use crate::alloc::{
 /// OSC timestamp format, this crate only allows conversions between times greater than or equal to
 /// the [`UNIX_EPOCH`](std::time::UNIX_EPOCH). This allows the math used in the conversions to work
 /// on 32-bit systems which cannot represent times that far back.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize)]
 pub struct OscTime {
     pub seconds: u32,
     pub fractional: u32,
@@ -149,7 +149,7 @@ impl std::error::Error for OscTimeError {}
 
 /// see OSC Type Tag String: [OSC Spec. 1.0](http://opensoundcontrol.org/spec-1_0)
 /// padding: zero bytes (n*4)
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum OscType {
     Int(i32),
     Float(f32),
@@ -230,7 +230,7 @@ impl<'a> From<&'a str> for OscType {
 }
 /// Represents the parts of a Midi message. Mainly used for
 /// tunneling midi over a network using the OSC protocol.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct OscMidiMessage {
     pub port: u8,
     pub status: u8,
@@ -240,7 +240,7 @@ pub struct OscMidiMessage {
 
 /// An *osc packet* can contain an *osc message* or a bundle of nested messages
 /// which is called *osc bundle*.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub enum OscPacket {
     Message(OscMessage),
     Bundle(OscBundle),
@@ -252,7 +252,7 @@ pub enum OscPacket {
 /// you want to control with OSC) and the arguments
 /// are used to set properties of the element to the
 /// respective values.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct OscMessage {
     pub addr: String,
     pub args: Vec<OscType>,
@@ -261,14 +261,14 @@ pub struct OscMessage {
 /// An OSC bundle contains zero or more OSC packets
 /// and a time tag. The contained packets *should* be
 /// applied at the given time tag.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct OscBundle {
     pub timetag: OscTime,
     pub content: Vec<OscPacket>,
 }
 
 /// An RGBA color.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct OscColor {
     pub red: u8,
     pub green: u8,
@@ -277,7 +277,7 @@ pub struct OscColor {
 }
 
 /// An OscArray color.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct OscArray {
     pub content: Vec<OscType>,
 }
